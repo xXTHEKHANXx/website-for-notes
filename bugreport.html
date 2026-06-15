@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UITNotes - Report a Bug</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">📚 UITNotes</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Browse Notes</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="auth.html" class="btn btn-outline">Login / Register</a></li>
+                <li><a href="admin.html" class="btn" style="background-color: var(--danger); color: white;">Admin Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <section id="bug-report" style="max-width: 800px; margin: 0 auto; border-top: 4px solid var(--danger);">
+            <h2 style="color: var(--danger);">Report a Bug or Error</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-muted);">
+                Did something break? Please provide as much detail as possible so our team can reproduce and fix the issue quickly.
+            </p>
+            
+            <form>
+                <div class="filter-bar">
+                    <div class="form-group" style="flex: 1; min-width: 250px;">
+                        <label>University Email</label>
+                        <input type="email" placeholder="studentofuit@gmail.com" required>
+                    </div>
+                    <div class="form-group" style="flex: 1; min-width: 250px;">
+                        <label>Date Encountered</label>
+                        <input type="date" required style="width: 100%; padding: 0.8rem; background-color: var(--bg-dark); border: 1px solid var(--bg-surface-light); color: var(--text-main); border-radius: 4px; color-scheme: dark;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Where did the error occur?</label>
+                    <select required>
+                        <option value="">Select a page or feature</option>
+                        <option value="login">Login / Registration</option>
+                        <option value="upload">Uploading Notes</option>
+                        <option value="browse">Browsing / Filtering Notes</option>
+                        <option value="download">Downloading a File</option>
+                        <option value="ui">Visual / Layout Glitch</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Issue Title</label>
+                    <input type="text" placeholder="e.g., Upload button doesn't respond on mobile" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Steps to Reproduce & Expected Behavior</label>
+                    <textarea rows="6" placeholder="1. What were you trying to do?&#10;2. What exactly happened instead?&#10;3. What device and browser are you using?" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Attach a Screenshot (Optional but highly recommended)</label>
+                    <input type="file" accept="image/png, image/jpeg">
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button type="button" class="btn" style="background-color: var(--danger); color: white;">Submit Bug Report</button>
+                </div>
+            </form>
+        </section>
+
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="feedback.html">Submit Feedback</a>
+            <a href="bugreport.html">Report a Bug / Error</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">&copy; 2026 UITNotes Platform. Built for Students.</p>
+    </footer>
+
+</body>
+</html>
