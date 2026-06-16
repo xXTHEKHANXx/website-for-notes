@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UITNotes - Browse Notes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo" style="text-decoration: none;">📚 UITNotes</a>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">Browse Notes</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="download.html">Download Notes</a></li>
+                <li id="nav-auth"><a href="auth.html" class="btn btn-outline">Login / Register</a></li>
+                <li><a href="admin.html" class="btn" style="background-color: var(--danger); color: white;">Admin Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section id="browse">
+            <h2>Recently Uploaded Notes</h2>
+            <div class="filter-bar">
+                <select id="filter-dept">
+                    <option value="">All Departments</option>
+                    <option value="cse">Computer Science and Engineering</option>
+                    <option value="it">Information Technology</option>
+                    <option value="ece">Electronics and Communication Engineering</option>
+                </select>
+                <select id="filter-sem">
+                    <option value="">All Semesters</option>
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                </select>
+                <input type="text" id="filter-search" placeholder="Search by Title..." style="flex: 2; min-width: 200px;">
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn" id="filter-btn">Filter</button>
+                    <button class="btn btn-outline" id="reset-btn">Reset</button>
+                </div>
+            </div>
+
+            <div class="notes-grid" id="recent-notes-container">
+                <p style="color: var(--text-muted);">Loading the latest uploads...</p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="download.html" class="btn btn-outline">View All Notes in Library &rarr;</a>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div style="margin-bottom: 1.5rem;">
+            <a href="index.html" class="logo" style="text-decoration: none; font-size: 1.5rem;">📚 UITNotes</a>
+        </div>
+        <div class="footer-links">
+            <a href="feedback.html">Submit Feedback</a>
+            <a href="bugreport.html">Report a Bug / Error</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">&copy; 2026 UITNotes Platform. Built for Students.</p>
+    </footer>
+
+    <script>
+        let allNotes = [];
+        const cacheBuster = '?v=' + new Date().getTime();
+        fetch('download.php' + cacheBuster).then(res => res.json()).then(data => {
+            if(!data.error) { allNotes = data; renderNotes(allNotes); }
+        });
+
+        function renderNotes(notesToDraw) {
+            const container = document.getElementById('recent-notes-container');
+            container.innerHTML = ''; 
+            const recentNotes = notesToDraw.slice(0, 8);
+            if(recentNotes.length === 0) { container.innerHTML = '<p>No notes found.</p>'; return; }
+
+            recentNotes.forEach(note => {
+                const dateObj = new Date(note.upload_date);
+                const formattedDate = isNaN(dateObj) ? "Recently" : dateObj.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+                container.innerHTML += `<div class="note-card"><h3 style="color: var(--buffer-blue);">${note.title}</h3><div class="note-meta"><span><strong>Dept:</strong> ${note.department.toUpperCase()}</span><span><strong>Sem:</strong> ${note.semester} | <strong>Sub:</strong> ${note.subject}</span><span style="margin-top: 0.3rem; color: #888;">🕒 ${formattedDate}</span></div><a href="${note.file_path}" class="btn" style="display: block; text-align: center; margin-top: 1rem;" download>📥 Download File</a></div>`; 
+            });
+        }
+
+        function applyFilters() {
+            const dept = document.getElementById('filter-dept').value.toLowerCase();
+            const sem = document.getElementById('filter-sem').value;
+            const search = document.getElementById('filter-search').value.toLowerCase();
+            renderNotes(allNotes.filter(n => (dept === "" || n.department.toLowerCase() === dept) && (sem === "" || String(n.semester) === sem) && (search === "" || n.title.toLowerCase().includes(search))));
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-dept').value = "";
+            document.getElementById('filter-sem').value = "";
+            document.getElementById('filter-search').value = "";
+            renderNotes(allNotes);
+        }
+
+        document.getElementById('filter-btn').addEventListener('click', applyFilters);
+        document.getElementById('reset-btn').addEventListener('click', resetFilters);
+    </script>
+
+    <script>
+        fetch('website.php?action=get_user').then(res => res.json()).then(user => {
+            if(user.logged_in) {
+                // 1. Inject the Avatar into the Header
+                const initial = user.name.charAt(0).toUpperCase();
+                document.getElementById('nav-auth').innerHTML = `<button id="avatar-btn" style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--primary-accent); color: #000; font-weight: bold; border: none; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center;">${initial}</button>`;
+
+                // 2. Build the Sidebar dynamically
+                const sidebarHTML = `
+                    <div id="prof-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 999;"></div>
+                    <div id="prof-sidebar" style="position: fixed; top: 0; right: -350px; width: 350px; height: 100vh; background-color: var(--bg-surface); box-shadow: -5px 0 15px rgba(0,0,0,0.5); transition: right 0.3s ease; z-index: 1000; display: flex; flex-direction: column;">
+                        <div style="padding: 1.5rem; border-bottom: 1px solid var(--bg-surface-light); display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="margin:0; color: var(--primary-accent);">My Profile</h3>
+                            <button id="close-sidebar" style="background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">&times;</button>
+                        </div>
+                        <div style="padding: 1.5rem; flex: 1; overflow-y: auto;">
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Full Name</div><div style="font-size: 1.1rem; color: var(--text-main); font-weight: bold;">${user.name}</div></div>
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Student ID</div><div style="font-size: 1.1rem; color: var(--text-main);">${user.student_id}</div></div>
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Department</div><div style="font-size: 1.1rem; color: var(--text-main);">${user.department.toUpperCase()}</div></div>
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">University Email</div><div style="font-size: 1rem; color: var(--text-main);">${user.email}</div></div>
+                        </div>
+                        <div style="padding: 1.5rem; border-top: 1px solid var(--bg-surface-light);">
+                            <a href="profile.html" class="btn btn-outline" style="display:block; text-align: center; margin-bottom: 1rem;">⚙️ Profile Settings</a>
+                            <button onclick="logoutUser()" class="btn" style="width: 100%; background-color: var(--danger); color: white;">Logout</button>
+                        </div>
+                    </div>`;
+                document.body.insertAdjacentHTML('beforeend', sidebarHTML);
+
+                // 3. Attach click events for sliding animation
+                const sidebar = document.getElementById('prof-sidebar');
+                const overlay = document.getElementById('prof-overlay');
+                const closeSidebar = () => { sidebar.style.right = '-350px'; overlay.style.opacity = '0'; overlay.style.visibility = 'hidden'; };
+
+                document.getElementById('avatar-btn').addEventListener('click', () => { sidebar.style.right = '0'; overlay.style.opacity = '1'; overlay.style.visibility = 'visible'; });
+                document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
+                overlay.addEventListener('click', closeSidebar);
+            }
+        });
+
+        // 4. Logout Function
+        function logoutUser() {
+            fetch('website.php', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'logout'}) })
+            .then(() => window.location.reload());
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UITNotes - Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo" style="text-decoration: none;">📚 UITNotes</a>
+        <nav>
+            <ul>
+                <li><a href="index.html">Browse Notes</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="download.html">Download Notes</a></li>
+                <li id="nav-auth"><a href="auth.html" class="btn btn-outline">Login / Register</a></li>
+                <li><a href="admin.html" class="btn" style="background-color: var(--danger); color: white;">Admin Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section id="admin" style="border: 1px solid var(--danger);">
+            <h2 style="color: var(--danger);">Admin Dashboard (Privileged Access)</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-muted);">Manage platform content. Deleted notes are permanently removed from the server and database.</p>
+
+            <h3 style="border-bottom: 1px solid var(--bg-surface-light); padding-bottom: 0.5rem;">Manage Uploaded Notes</h3>
+            
+            <div id="admin-notes-container" style="margin-top: 1rem; display: flex; flex-direction: column; gap: 1rem;">
+                <p>Loading notes from database...</p>
+            </div>
+
+        </section>
+    </div>
+
+    <footer>
+        <div style="margin-bottom: 1.5rem;">
+            <a href="index.html" class="logo" style="text-decoration: none; font-size: 1.5rem;">📚 UITNotes</a>
+        </div>
+        <div class="footer-links">
+            <a href="feedback.html">Submit Feedback</a>
+            <a href="bugreport.html">Report a Bug / Error</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">&copy; 2026 UITNotes Platform. Built for Students.</p>
+    </footer>
+
+    <script>
+        function loadAdminNotes() {
+            fetch('download.php')
+            .then(res => res.json())
+            .then(data => {
+                const container = document.getElementById('admin-notes-container');
+                container.innerHTML = '';
+
+                if(data.error || data.length === 0) {
+                    container.innerHTML = '<p>No notes found in the database.</p>';
+                    return;
+                }
+
+                data.forEach(note => {
+                    container.innerHTML += `
+                        <div style="background-color: var(--bg-dark); padding: 1rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--danger);">
+                            <div>
+                                <h4 style="color: var(--text-main); margin-bottom: 0.3rem;">${note.title}</h4>
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">ID: ${note.id} | Dept: ${note.department.toUpperCase()} | Subject: ${note.subject}</p>
+                            </div>
+                            <button onclick="deleteNote(${note.id})" class="btn" style="background-color: var(--danger); color: white; padding: 0.4rem 1rem;">Delete File</button>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        function deleteNote(noteId) {
+            if(!confirm("Are you sure you want to permanently delete this note?")) return;
+
+            fetch('delete_note.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: noteId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    alert("Note permanently deleted.");
+                    loadAdminNotes(); 
+                } else {
+                    alert("Error deleting note: " + data.error);
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Failed to reach server.");
+            });
+        }
+
+        loadAdminNotes();
+    </script>
+    <script>
+        fetch('website.php?action=get_user').then(res => res.json()).then(user => {
+            if(user.logged_in) {
+                // 1. Inject the Avatar into the Header
+                const initial = user.name.charAt(0).toUpperCase();
+                document.getElementById('nav-auth').innerHTML = `<button id="avatar-btn" style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--primary-accent); color: #000; font-weight: bold; border: none; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center;">${initial}</button>`;
+
+                // 2. Build the Sidebar dynamically
+                const sidebarHTML = `
+                    <div id="prof-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 999;"></div>
+                    <div id="prof-sidebar" style="position: fixed; top: 0; right: -350px; width: 350px; height: 100vh; background-color: var(--bg-surface); box-shadow: -5px 0 15px rgba(0,0,0,0.5); transition: right 0.3s ease; z-index: 1000; display: flex; flex-direction: column;">
+                        <div style="padding: 1.5rem; border-bottom: 1px solid var(--bg-surface-light); display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="margin:0; color: var(--primary-accent);">My Profile</h3>
+                            <button id="close-sidebar" style="background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">&times;</button>
+                        </div>
+                        <div style="padding: 1.5rem; flex: 1; overflow-y: auto;">
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Full Name</div><div style="font-size: 1.1rem; color: var(--text-main); font-weight: bold;">${user.name}</div></div>
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Student ID</div><div style="font-size: 1.1rem; color: var(--text-main);">${user.student_id}</div></div>
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Department</div><div style="font-size: 1.1rem; color: var(--text-main);">${user.department.toUpperCase()}</div></div>
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">University Email</div><div style="font-size: 1rem; color: var(--text-main);">${user.email}</div></div>
+                        </div>
+                        <div style="padding: 1.5rem; border-top: 1px solid var(--bg-surface-light);">
+                            <a href="profile.html" class="btn btn-outline" style="display:block; text-align: center; margin-bottom: 1rem;">⚙️ Profile Settings</a>
+                            <button onclick="logoutUser()" class="btn" style="width: 100%; background-color: var(--danger); color: white;">Logout</button>
+                        </div>
+                    </div>`;
+                document.body.insertAdjacentHTML('beforeend', sidebarHTML);
+
+                // 3. Attach click events for sliding animation
+                const sidebar = document.getElementById('prof-sidebar');
+                const overlay = document.getElementById('prof-overlay');
+                const closeSidebar = () => { sidebar.style.right = '-350px'; overlay.style.opacity = '0'; overlay.style.visibility = 'hidden'; };
+
+                document.getElementById('avatar-btn').addEventListener('click', () => { sidebar.style.right = '0'; overlay.style.opacity = '1'; overlay.style.visibility = 'visible'; });
+                document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
+                overlay.addEventListener('click', closeSidebar);
+            }
+        });
+
+        // 4. Logout Function
+        function logoutUser() {
+            fetch('website.php', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'logout'}) })
+            .then(() => window.location.reload());
+        }
+    </script>
+</body>
+</html>

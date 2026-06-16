@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UITNotes - Login / Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo" style="text-decoration: none;">📚 UITNotes</a>
+        <nav>
+            <ul>
+                <li><a href="index.html">Browse Notes</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="download.html">Download Notes</a></li>
+                <li><a href="auth.html" class="btn btn-outline active">Login / Register</a></li>
+                <li><a href="admin.html" class="btn" style="background-color: var(--danger); color: white;">Admin Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section id="auth">
+            <div class="auth-grid">
+                <div>
+                    <h2>Login</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label>University Email</label>
+                            <input type="email" id="log-email" placeholder="studentofuit@gmail.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="log-password" placeholder="enter your password" required>
+                        </div>
+                        <p id="log-err" style="color: var(--danger); margin-bottom: 1rem;"></p>
+                        <button type="submit" class="btn">Login</button>
+                    </form>
+                </div>
+                <div>
+                    <h2>Register</h2>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="reg-name" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Student ID</label>
+                            <input type="text" id="reg-student-id" placeholder="e.g., UIT26001" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Department</label>
+                            <select id="reg-dept" required>
+                                <option value="">Select Department</option>
+                                <option value="cse">Computer Science</option>
+                                <option value="it">Information Tech</option>
+                                <option value="ece">Electronics</option>
+                                <option value="aeie">Applied Electronics</option>
+                                <option value="ee">Electrical Engineering</option>
+                                <option value="ce">Civil Engineering</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>University Email</label>
+                            <input type="email" id="reg-email" placeholder="studentofuit@gmail.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="reg-password" placeholder="Create a strong password" required>
+                        </div>
+                        
+                        <p id="reg-err" style="color: var(--danger); margin-bottom: 1rem;"></p>
+                        <button type="submit" class="btn btn-outline">Create Account</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Login Handler
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch('website.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'login',
+                    email: document.getElementById('log-email').value,
+                    password: document.getElementById('log-password').value
+                })
+            }).then(res => res.json()).then(data => {
+                if(data.success) { window.location.href = 'index.html'; } 
+                else { document.getElementById('log-err').innerText = data.error; }
+            });
+        });
+
+        // Register Handler
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch('website.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'register',
+                    name: document.getElementById('reg-name').value,
+                    student_id: document.getElementById('reg-student-id').value,
+                    department: document.getElementById('reg-dept').value,
+                    email: document.getElementById('reg-email').value,
+                    password: document.getElementById('reg-password').value
+                })
+            }).then(res => res.json()).then(data => {
+                if(data.success) { window.location.href = 'index.html'; } 
+                else { document.getElementById('reg-err').innerText = data.error; }
+            });
+        });
+    </script>
+</body>
+</html>

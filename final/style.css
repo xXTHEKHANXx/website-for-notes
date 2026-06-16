@@ -1,0 +1,379 @@
+/* --- Dark Theme Variables --- */
+:root {
+    --bg-dark: #121212;
+    --bg-surface: #1e1e1e;
+    --bg-surface-light: #2c2c2c;
+    --primary-accent: #bb86fc;
+    --primary-hover: #9965f4;
+    --buffer-blue: #00d2ff;
+    --text-main: #e0e0e0;
+    --text-muted: #a0a0a0;
+    --danger: #cf6679;
+}
+
+/* --- Global Styles --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+a {
+    color: var(--primary-accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* --- Navigation --- */
+header {
+    background-color: var(--bg-surface);
+    padding: 1rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--bg-surface-light);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-accent);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+/* NEW: Inactive Nav Links */
+nav ul li a:not(.btn) {
+    color: var(--text-main);
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+/* NEW: Hover state for Nav Links */
+nav ul li a:not(.btn):hover {
+    color: var(--primary-accent);
+    text-decoration: none;
+}
+
+/* NEW: Active/Current Page state */
+nav ul li a.active:not(.btn) {
+    color: var(--primary-accent);
+    border-bottom: 2px solid var(--primary-accent);
+    padding-bottom: 0.3rem;
+}
+
+.btn {
+    background-color: var(--primary-accent);
+    color: #000;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background-color: var(--primary-hover);
+    text-decoration: none;
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--primary-accent);
+    border: 1px solid var(--primary-accent);
+}
+
+.btn-outline:hover {
+    background-color: rgba(187, 134, 252, 0.1);
+}
+
+/* --- Layout Containers --- */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 2rem auto;
+    flex: 1;
+}
+
+section {
+    background-color: var(--bg-surface);
+    padding: 2rem;
+    border-radius: 8px;
+}
+
+h2 {
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--bg-surface-light);
+    padding-bottom: 0.5rem;
+}
+
+/* --- Forms & Inputs --- */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--bg-surface-light);
+    color: var(--text-main);
+    border-radius: 4px;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-accent);
+}
+
+/* Modern Choose File Button */
+input[type="file"] {
+    width: 100%;
+    padding: 0.6rem;
+    background-color: var(--bg-dark);
+    border: 1px dashed var(--primary-accent);
+    color: var(--text-muted);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="file"]:hover {
+    border-color: var(--buffer-blue);
+    box-shadow: 0 0 8px rgba(0, 210, 255, 0.2);
+}
+
+input[type="file"]::file-selector-button {
+    margin-right: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--bg-surface-light);
+    color: var(--text-main);
+    border: 1px solid var(--text-muted);
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: var(--primary-accent);
+    color: #000;
+    border-color: var(--primary-accent);
+}
+
+/* --- Browse Notes Filters & Grid --- */
+.filter-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.filter-bar select {
+    flex: 1;
+    min-width: 150px;
+}
+
+.notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.note-card {
+    background-color: var(--bg-surface-light);
+    padding: 1.5rem;
+    border-radius: 8px;
+    transition: transform 0.2s;
+}
+
+.note-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.note-meta {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0.5rem 0 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+/* --- Auth Grid --- */
+.auth-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+@media (max-width: 768px) {
+    .auth-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --- Anti-Spam Checkbox --- */
+.captcha-mock {
+    background-color: var(--bg-dark);
+    padding: 1.2rem;
+    border: 1px solid var(--bg-surface-light);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.captcha-mock::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--buffer-blue), transparent);
+    animation: scan 2.5s infinite linear;
+}
+
+@keyframes scan {
+    0% { left: -50%; }
+    100% { left: 150%; }
+}
+
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text-main);
+    user-select: none;
+    position: relative;
+}
+
+.custom-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: relative;
+    height: 28px;
+    width: 28px;
+    background-color: var(--bg-dark);
+    border: 2px solid #555;
+    border-radius: 6px;
+    margin-right: 15px;
+}
+
+.checkmark::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 14px; height: 14px;
+    margin-top: -9px; margin-left: -9px;
+    border: 2px solid transparent;
+    border-top-color: var(--buffer-blue);
+    border-right-color: var(--buffer-blue);
+    border-radius: 50%;
+    opacity: 0;
+}
+
+.checkmark::after {
+    content: '';
+    position: absolute;
+    left: 8px; top: 3px;
+    width: 6px; height: 12px;
+    border: solid var(--bg-dark);
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+}
+
+.custom-checkbox:hover input:not(:checked) ~ .checkmark {
+    border-color: var(--buffer-blue);
+}
+
+.custom-checkbox input:checked ~ .checkmark {
+    animation: fillBox 0.2s 0.5s forwards;
+}
+
+.custom-checkbox input:checked ~ .checkmark::before {
+    opacity: 1;
+    animation: spin 0.6s linear infinite, hideSpinner 0s 0.5s forwards;
+}
+
+.custom-checkbox input:checked ~ .checkmark::after {
+    animation: showCheck 0.2s 0.5s forwards;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fillBox {
+    to {
+        background-color: var(--buffer-blue);
+        border-color: var(--buffer-blue);
+        box-shadow: 0 0 12px rgba(0, 210, 255, 0.4);
+    }
+}
+
+@keyframes hideSpinner {
+    to { opacity: 0; visibility: hidden; }
+}
+
+@keyframes showCheck {
+    to { opacity: 1; }
+}
+
+/* --- Footer --- */
+footer {
+    background-color: var(--bg-surface);
+    padding: 2rem 5%;
+    text-align: center;
+    border-top: 1px solid var(--bg-surface-light);
+    margin-top: 4rem;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
