@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UITNotes - Download Library</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>Download Notes</h2>
+
+    <form action="download.php" method="POST" enctype="multipart/form-data">
+    <header>
+        <div class="logo">📚 UITNotes</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Browse Notes</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="download.html">Download Notes</a></li>
+                <li><a href="auth.html" class="btn btn-outline">Login / Register</a></li>
+                <li><a href="admin.html" class="btn" style="background-color: var(--danger); color: white;">Admin Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section id="download-library">
+            <h2>Download Library</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-muted);">
+                Access and download study materials shared by the community.
+            </p>
+            
+            <div class="filter-bar">
+                <select id="dept-filter">
+                    <option value="">All Departments</option>
+                    <option value="cse">Computer Science and Engineering</option>
+                    <option value="it">Information Technology</option>
+                    <option value="ece">Electronics and Communication Engineering</option>
+                    <option value="aeie">Applied Electronics and Instrumentation Engineering</option>
+                    <option value="ee">Electrical Engineering</option>
+                    <option value="ce">Civil Engineering</option>
+                </select>
+                <input type="text" placeholder="Search notes..." style="flex: 2; min-width: 200px;">
+                <button class="btn">Search</button>
+            </div>
+
+            <div class="notes-grid" id="notes-container">
+                <p>Loading notes from the database...</p>
+            </div>
+            
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="feedback.html">Submit Feedback</a>
+            <a href="bugreport.html">Report a Bug / Error</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">&copy; 2026 UITNotes Platform. Built for Students.</p>
+    </footer>
+
+    <script>
+        // When the page loads, fetch the data from the PHP file
+        fetch('download.php')
+            .then(response => response.json()) // Convert the JSON back into usable data
+            .then(data => {
+                const container = document.getElementById('notes-container');
+                container.innerHTML = ''; // Clear the "Loading" text
+                
+                if(data.length === 0) {
+                    container.innerHTML = '<p>No notes available for download yet.</p>';
+                    return;
+                }
+
+                // Loop through every note and build a beautiful HTML card for it
+                data.forEach(note => {
+                    const card = `
+                        <div class="note-card">
+                            <h3 style="color: var(--buffer-blue);">${note.title}</h3>
+                            <div class="note-meta">
+                                <span><strong>Dept:</strong> ${note.department.toUpperCase()}</span>
+                                <span><strong>Sem:</strong> ${note.semester} | <strong>Subject:</strong> ${note.subject}</span>
+                            </div>
+                            <a href="uploads/${note.file_path}" class="btn" style="display: block; text-align: center; margin-top: 1rem;" download>📥 Download File</a>
+                        </div>
+                    `;
+                    container.innerHTML += card; // Add the card to the screen
+                });
+            })
+            .catch(error => {
+                console.error("Error fetching notes:", error);
+                document.getElementById('notes-container').innerHTML = '<p style="color: var(--danger);">Failed to load notes. Ensure your XAMPP server is running.</p>';
+            });
+    </script>
+    </form>
+</body>
+</html>

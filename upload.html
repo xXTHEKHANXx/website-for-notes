@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UITNotes - Upload Notes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">📚 UITNotes</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Browse Notes</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="download.html">Download Notes</a></li>
+                <li><a href="auth.html" class="btn btn-outline">Login / Register</a></li>
+                <li><a href="admin.html" class="btn" style="background-color: var(--danger); color: white;">Admin Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section id="upload">
+            <h2>Upload Notes</h2>
+            <p style="margin-bottom: 1rem; color: var(--text-muted);">Share your knowledge with your peers. All uploads are subject to admin review.</p>
+        <form action="upload.php" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label>Document Title</label>
+                    <input type="text" placeholder="e.g., Chapter 4 Study Guide" name="title">
+                </div>
+                <div class="filter-bar">
+                    <select name="department" required>
+                        <option value="">Select Department</option>
+                        <option value="cse">Computer Science and Engineering</option>
+                        <option value="it">Information Technology</option>
+                        <option value="ece">Electronics and Communication Engineering</option>
+                        <option value="aeie">Applied Electronics and Instrumentation Engineering</option>
+                        <option value="ee">Electrical Engineering</option>
+                        <option value="ce">Civil Engineering</option>
+                    </select>
+                    <select name="semester" required>
+                        <option value="">Select Semester</option>
+                        <option value="1">Semester 1</option>
+                        <option value="2">Semester 2</option>
+                        <option value="3">Semester 3</option>
+                        <option value="4">Semester 4</option>
+                        <option value="5">Semester 5</option>
+                        <option value="6">Semester 6</option>  
+                        <option value="7">Semester 7</option>
+                        <option value="8">Semester 8</option>
+                    </select>
+                    <select name="subject">
+                        <option value="">Subject</option>
+                        <option value="comp">Computer Science and Engineering</option>
+                        <option value="math">Mathematics</option>
+                        <option value="phy">Physics</option>
+                        <option value="chem">Chemistry</option>
+                        <option value="mech">Mechanical Engineering</option>
+                        <option value="ee">Electrical Engineering</option>
+                        <option value="hu">English</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Select File (PDF, DOCX, ZIP)</label>
+                    <input type="file" name="pdf" accept=".pdf,.docx,.zip" required>
+                </div>
+                <button type="submit" class="btn">Upload Document</button>
+            </form>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="feedback.html">Submit Feedback</a>
+            <a href="bugreport.html">Report a Bug / Error</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">&copy; 2026 UITNotes Platform. Built for Students.</p>
+    </footer>
+</body>
+</html>
