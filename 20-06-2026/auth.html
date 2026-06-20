@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UITNotes - Login / Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo" style="text-decoration: none;">📚 UITNotes</a>
+        <nav>
+            <ul>
+                <li><a href="index.html">Browse Notes</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="download.html">Download Notes</a></li>
+                <li id="nav-auth"><a href="auth.html" class="btn btn-outline active">Login / Register</a></li>
+                <li id="nav-admin" style="display: none;"><a href="admin.html" class="btn" style="background-color: var(--danger); color: white;">Admin Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section id="auth">
+            <div class="auth-grid">
+                <div>
+                    <h2>Login</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label>University Email</label>
+                            <input type="email" id="log-email" placeholder="studentofuit@gmail.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="log-password" placeholder="enter your password" required>
+                            <div style="margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" id="show-log-pass" onclick="togglePassword('log-password')" style="cursor: pointer;">
+                                <label for="show-log-pass" style="margin: 0; cursor: pointer; color: var(--text-muted); font-size: 0.9rem;">Show Password</label>
+                            </div>
+                        </div>
+                        <p id="log-err" style="color: var(--danger); margin-bottom: 1rem;"></p>
+                        <button type="submit" class="btn">Login</button>
+                    </form>
+                </div>
+
+                <div>
+                    <h2>Register</h2>
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="reg-name" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Student ID</label>
+                            <input type="text" id="reg-student-id" placeholder="e.g., UIT26001" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Department</label>
+                            <select id="reg-dept" required>
+                                <option value="">Select Department</option>
+                                <option value="cse">Computer Science and Engineering</option>
+                                <option value="it">Information Technology</option>
+                                <option value="ece">Electronics and Communication Engineering</option>
+                                <option value="aeie">Applied Electronics and Instrumentation Engineering</option>
+                                <option value="ee">Electrical Engineering</option>
+                                <option value="ce">Civil Engineering</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Year of Study</label>
+                            <select id="reg-year" required>
+                                <option value="">Select Year</option>
+                                <option value="1">1st Year</option>
+                                <option value="2">2nd Year</option>
+                                <option value="3">3rd Year</option>
+                                <option value="4">4th Year</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>University Email</label>
+                            <input type="email" id="reg-email" placeholder="studentofuit@gmail.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" id="reg-password" placeholder="Min 8 chars, 1 letter, 1 number, 1 special char" 
+                                   pattern="(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}" 
+                                   title="Must contain at least 8 characters, including 1 letter, 1 number, and 1 special character." required>
+                            <div style="margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" id="show-reg-pass" onclick="togglePassword('reg-password')" style="cursor: pointer;">
+                                <label for="show-reg-pass" style="margin: 0; cursor: pointer; color: var(--text-muted); font-size: 0.9rem;">Show Password</label>
+                            </div>
+                        </div>
+                        
+                        <div class="captcha-mock">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <label class="custom-checkbox">
+                                    <input type="checkbox" id="human" required>
+                                    <span class="checkmark"></span>
+                                </label>
+                                <span style="color: var(--text-main); font-size: 1rem; user-select: none;">I am human (Anti-Spam Check)</span>
+                            </div>
+                        </div>
+
+                        <p id="reg-err" style="color: var(--danger); margin-bottom: 1rem;"></p>
+                        <button type="submit" class="btn btn-outline">Create Account</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div style="margin-bottom: 1.5rem;">
+            <a href="index.html" class="logo" style="text-decoration: none; font-size: 1.5rem;">📚 UITNotes</a>
+        </div>
+        <div class="footer-links">
+            <a href="feedback.html">Submit Feedback</a>
+            <a href="bugreport.html">Report a Bug / Error</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">&copy; 2026 UITNotes Platform. Built for Students.</p>
+    </footer>
+
+    <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+            } else {
+                input.type = "password";
+            }
+        }
+
+        fetch('website.php?action=get_user').then(res => res.json()).then(user => {
+            if(user.logged_in) {
+                if(user.email === 'minhajganikhan2007@gmail.com') {
+                    document.getElementById('nav-admin').style.display = 'block';
+                }
+
+                let displayYear = "Not Set";
+                if (user.study_year == 1) displayYear = "1st Year";
+                else if (user.study_year == 2) displayYear = "2nd Year";
+                else if (user.study_year == 3) displayYear = "3rd Year";
+                else if (user.study_year == 4) displayYear = "4th Year";
+
+                const initial = user.name.charAt(0).toUpperCase();
+                document.getElementById('nav-auth').innerHTML = `<button id="avatar-btn" style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--primary-accent); color: #000; font-weight: bold; border: none; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center;">${initial}</button>`;
+
+                const sidebarHTML = `
+                    <div id="prof-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 999;"></div>
+                    <div id="prof-sidebar" style="position: fixed; top: 0; right: -350px; width: 350px; height: 100vh; background-color: var(--bg-surface); box-shadow: -5px 0 15px rgba(0,0,0,0.5); transition: right 0.3s ease; z-index: 1000; display: flex; flex-direction: column;">
+                        <div style="padding: 1.5rem; border-bottom: 1px solid var(--bg-surface-light); display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="margin:0; color: var(--primary-accent);">My Profile</h3>
+                            <button id="close-sidebar" style="background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">&times;</button>
+                        </div>
+                        <div style="padding: 1.5rem; flex: 1; overflow-y: auto;">
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Full Name</div><div style="font-size: 1.1rem; color: var(--text-main); font-weight: bold;">${user.name}</div></div>
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Student ID</div><div style="font-size: 1.1rem; color: var(--text-main);">${user.student_id}</div></div>
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Department</div><div style="font-size: 1.1rem; color: var(--text-main);">${user.department.toUpperCase()}</div></div>
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Year of Study</div><div style="font-size: 1.1rem; color: var(--text-main);">${displayYear}</div></div>
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">University Email</div><div style="font-size: 1rem; color: var(--text-main);">${user.email}</div></div>
+                        </div>
+                        <div style="padding: 1.5rem; border-top: 1px solid var(--bg-surface-light);">
+                            <a href="profile.html" class="btn btn-outline" style="display:block; text-align: center; margin-bottom: 1rem;">⚙️ Profile Settings</a>
+                            <button onclick="logoutUser()" class="btn" style="width: 100%; background-color: var(--danger); color: white;">Logout</button>
+                        </div>
+                    </div>`;
+                document.body.insertAdjacentHTML('beforeend', sidebarHTML);
+
+                const sidebar = document.getElementById('prof-sidebar');
+                const overlay = document.getElementById('prof-overlay');
+                const closeSidebar = () => { sidebar.style.right = '-350px'; overlay.style.opacity = '0'; overlay.style.visibility = 'hidden'; };
+
+                document.getElementById('avatar-btn').addEventListener('click', () => { sidebar.style.right = '0'; overlay.style.opacity = '1'; overlay.style.visibility = 'visible'; });
+                document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
+                overlay.addEventListener('click', closeSidebar);
+            }
+        });
+
+        function logoutUser() {
+            fetch('website.php', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'logout'}) })
+            .then(() => window.location.reload());
+        }
+        
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch('website.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'login',
+                    email: document.getElementById('log-email').value,
+                    password: document.getElementById('log-password').value
+                })
+            }).then(res => res.json()).then(data => {
+                if(data.success) { 
+                    alert("Successfully logged in!"); 
+                    window.location.href = 'index.html'; 
+                } 
+                else { document.getElementById('log-err').innerText = data.error; }
+            });
+        });
+
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const password = document.getElementById('reg-password').value;
+            const passRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+            
+            if (!passRegex.test(password)) {
+                document.getElementById('reg-err').innerText = "Security Error: Password must be at least 8 characters long, and include at least 1 letter, 1 number, and 1 special character.";
+                return; 
+            }
+
+            fetch('website.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'register',
+                    name: document.getElementById('reg-name').value,
+                    student_id: document.getElementById('reg-student-id').value,
+                    department: document.getElementById('reg-dept').value,
+                    study_year: document.getElementById('reg-year').value, // NEW ADDITION
+                    email: document.getElementById('reg-email').value,
+                    password: password
+                })
+            }).then(res => res.json()).then(data => {
+                if(data.success) { 
+                    alert("Account successfully created!"); 
+                    window.location.href = 'index.html'; 
+                } 
+                else { document.getElementById('reg-err').innerText = data.error; }
+            });
+        });
+    </script>
+</body>
+</html>

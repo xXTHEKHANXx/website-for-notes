@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UITNotes - Profile Settings</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo" style="text-decoration: none;">📚 UITNotes</a>
+        <nav>
+            <ul>
+                <li><a href="index.html">Browse Notes</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="download.html">Download Notes</a></li>
+                <li id="nav-auth"><a href="auth.html" class="btn btn-outline">Login / Register</a></li>
+                <li id="nav-admin" style="display: none;"><a href="admin.html" class="btn" style="background-color: var(--danger); color: white;">Admin Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section id="profile-settings" style="max-width: 600px; margin: 0 auto;">
+            <h2>Profile Settings</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-muted);">Update your personal information and account details here.</p>
+            
+            <form id="profile-form">
+                <div class="form-group">
+                    <label>System User ID (Cannot be changed)</label>
+                    <input type="text" id="prof-sys-id" disabled style="background-color: #333; cursor: not-allowed; font-weight: bold; color: var(--primary-accent);">
+                </div>
+                
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="prof-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Student ID</label>
+                    <input type="text" id="prof-id" required>
+                </div>
+                <div class="form-group">
+                    <label>Department</label>
+                    <select id="prof-dept" required>
+                        <option value="cse">Computer Science and Engineering</option>
+                        <option value="it">Information Technology</option>
+                        <option value="ece">Electronics and Communication Engineering</option>
+                        <option value="aeie">Applied Electronics and Instrumentation Engineering</option>
+                        <option value="ee">Electrical Engineering</option>
+                        <option value="ce">Civil Engineering</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Year of Study</label>
+                    <select id="prof-year" required>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>University Email (Cannot be changed)</label>
+                    <input type="email" id="prof-email" disabled style="background-color: #333; cursor: not-allowed;">
+                </div>
+                <div class="form-group">
+                    <label>New Password (Leave blank to keep current)</label>
+                    <input type="password" id="prof-password" placeholder="Enter new password">
+                </div>
+                
+                <div id="prof-msg" style="margin-bottom: 1rem; color: var(--buffer-blue);"></div>
+                <button type="submit" class="btn">Save Changes</button>
+            </form>
+        </section>
+    </div>
+
+    <footer>
+        <div style="margin-bottom: 1.5rem;">
+            <a href="index.html" class="logo" style="text-decoration: none; font-size: 1.5rem;">📚 UITNotes</a>
+        </div>
+        <div class="footer-links">
+            <a href="feedback.html">Submit Feedback</a>
+            <a href="bugreport.html">Report a Bug / Error</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">&copy; 2026 UITNotes Platform. Built for Students.</p>
+    </footer>
+
+    <script>
+        fetch('website.php?action=get_user')
+        .then(res => res.json())
+        .then(user => {
+            if(!user.logged_in) {
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            // Fill Form including the new ID
+            document.getElementById('prof-sys-id').value = "#" + user.id;
+            document.getElementById('prof-name').value = user.name;
+            document.getElementById('prof-id').value = user.student_id;
+            document.getElementById('prof-dept').value = user.department;
+            document.getElementById('prof-email').value = user.email;
+            document.getElementById('prof-year').value = user.study_year || ''; 
+
+            if(user.email === 'minhajganikhan2007@gmail.com') {
+                document.getElementById('nav-admin').style.display = 'block';
+            }
+
+            let displayYear = "Not Set";
+            if (user.study_year == 1) displayYear = "1st Year";
+            else if (user.study_year == 2) displayYear = "2nd Year";
+            else if (user.study_year == 3) displayYear = "3rd Year";
+            else if (user.study_year == 4) displayYear = "4th Year";
+
+            const initial = user.name.charAt(0).toUpperCase();
+            document.getElementById('nav-auth').innerHTML = `<button id="avatar-btn" style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--primary-accent); color: #000; font-weight: bold; border: none; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center;">${initial}</button>`;
+
+            // Added System User ID to the top of the sidebar
+            const sidebarHTML = `
+                <div id="prof-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 999;"></div>
+                <div id="prof-sidebar" style="position: fixed; top: 0; right: -350px; width: 350px; height: 100vh; background-color: var(--bg-surface); box-shadow: -5px 0 15px rgba(0,0,0,0.5); transition: right 0.3s ease; z-index: 1000; display: flex; flex-direction: column;">
+                    <div style="padding: 1.5rem; border-bottom: 1px solid var(--bg-surface-light); display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin:0; color: var(--primary-accent);">My Profile</h3>
+                        <button id="close-sidebar" style="background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">&times;</button>
+                    </div>
+                    <div style="padding: 1.5rem; flex: 1; overflow-y: auto;">
+                        <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">System User ID</div><div style="font-size: 1.1rem; color: var(--primary-accent); font-weight: bold;">#${user.id}</div></div>
+                        <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Full Name</div><div style="font-size: 1.1rem; color: var(--text-main); font-weight: bold;">${user.name}</div></div>
+                        <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Student ID</div><div style="font-size: 1.1rem; color: var(--text-main);">${user.student_id}</div></div>
+                        <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Department</div><div style="font-size: 1.1rem; color: var(--text-main);">${user.department.toUpperCase()}</div></div>
+                        <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Year of Study</div><div style="font-size: 1.1rem; color: var(--text-main);">${displayYear}</div></div>
+                        <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">University Email</div><div style="font-size: 1rem; color: var(--text-main);">${user.email}</div></div>
+                    </div>
+                    <div style="padding: 1.5rem; border-top: 1px solid var(--bg-surface-light);">
+                        <a href="profile.html" class="btn btn-outline" style="display:block; text-align: center; margin-bottom: 1rem;">⚙️ Profile Settings</a>
+                        <button onclick="logoutUser()" class="btn" style="width: 100%; background-color: var(--danger); color: white;">Logout</button>
+                    </div>
+                </div>`;
+            document.body.insertAdjacentHTML('beforeend', sidebarHTML);
+
+            const sidebar = document.getElementById('prof-sidebar');
+            const overlay = document.getElementById('prof-overlay');
+            const closeSidebar = () => { sidebar.style.right = '-350px'; overlay.style.opacity = '0'; overlay.style.visibility = 'hidden'; };
+
+            document.getElementById('avatar-btn').addEventListener('click', () => { sidebar.style.right = '0'; overlay.style.opacity = '1'; overlay.style.visibility = 'visible'; });
+            document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
+            overlay.addEventListener('click', closeSidebar);
+        });
+
+        // Form Submission Update
+        document.getElementById('profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const payload = {
+                action: 'update_profile',
+                name: document.getElementById('prof-name').value,
+                student_id: document.getElementById('prof-id').value,
+                department: document.getElementById('prof-dept').value,
+                study_year: document.getElementById('prof-year').value, 
+                password: document.getElementById('prof-password').value
+            };
+
+            fetch('website.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(res => res.json()).then(data => {
+                if(data.success) {
+                    document.getElementById('prof-msg').innerText = "Profile updated successfully! Refreshing...";
+                    setTimeout(() => window.location.reload(), 1500);
+                } else {
+                    document.getElementById('prof-msg').innerText = "Error: " + data.error;
+                    document.getElementById('prof-msg').style.color = "var(--danger)";
+                }
+            });
+        });
+
+        function logoutUser() {
+            fetch('website.php', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'logout'}) })
+            .then(() => window.location.href = 'auth.html');
+        }
+    </script>
+</body>
+</html>

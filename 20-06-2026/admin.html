@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UITNotes - Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo" style="text-decoration: none;">📚 UITNotes</a>
+        <nav>
+            <ul>
+                <li><a href="index.html">Browse Notes</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="download.html">Download Notes</a></li>
+                <li id="nav-auth"><a href="auth.html" class="btn btn-outline">Login / Register</a></li>
+                <li id="nav-admin" style="display: none;"><a href="admin.html" class="btn active" style="background-color: var(--danger); color: white; border-bottom: none;">Admin Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div style="margin-bottom: 2rem; border-bottom: 1px solid var(--bg-surface-light); padding-bottom: 1rem;">
+            <h2 style="color: var(--text-main); margin-bottom: 0.5rem;">Admin Dashboard <span style="color: var(--danger); font-size: 1.2rem;">(Privileged Access)</span></h2>
+            <p style="color: var(--text-muted);">Manage platform users and content. <strong>Note:</strong> Deleting a user account will securely preserve their previously uploaded notes on the server.</p>
+        </div>
+
+        <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+            
+            <section id="admin-users" style="flex: 1; min-width: 350px; border: 1px solid var(--primary-accent); padding: 1.5rem; border-radius: 8px; background-color: var(--bg-surface);">
+                <h3 style="color: var(--primary-accent); border-bottom: 1px solid var(--bg-surface-light); padding-bottom: 0.5rem;">Manage Users</h3>
+                
+                <div class="filter-bar" style="margin-top: 1rem; margin-bottom: 1.5rem; padding: 1rem; background-color: var(--bg-surface-light); border-radius: 6px;">
+                    <select id="user-filter-dept" style="flex: 1; min-width: 110px;">
+                        <option value="">All Depts</option>
+                        <option value="cse">CSE</option>
+                        <option value="it">IT</option>
+                        <option value="ece">ECE</option>
+                        <option value="aeie">AEIE</option>
+                        <option value="ee">EE</option>
+                        <option value="ce">CE</option>
+                    </select>
+                    <select id="user-filter-year" style="flex: 1; min-width: 110px;">
+                        <option value="">All Years</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+                    <input type="text" id="user-filter-search" placeholder="Search System ID, Student ID, or Name..." title="Search System ID, Student ID, or Name..." style="flex: 2; min-width: 150px;">
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="applyUserFilters()" class="btn">Search</button>
+                        <button onclick="resetUserFilters()" class="btn btn-outline">Reset</button>
+                    </div>
+                </div>
+                
+                <div id="admin-users-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <p>Loading users from database...</p>
+                </div>
+            </section>
+
+            <section id="admin-notes" style="flex: 1; min-width: 350px; border: 1px solid var(--danger); padding: 1.5rem; border-radius: 8px; background-color: var(--bg-surface);">
+                <h3 style="color: var(--danger); border-bottom: 1px solid var(--bg-surface-light); padding-bottom: 0.5rem;">Manage Uploaded Notes</h3>
+                
+                <div class="filter-bar" style="margin-top: 1rem; margin-bottom: 1.5rem; padding: 1rem; background-color: var(--bg-surface-light); border-radius: 6px;">
+                    <select id="note-filter-dept" style="flex: 1; min-width: 100px;">
+                        <option value="">All Depts</option>
+                        <option value="cse">CSE</option>
+                        <option value="it">IT</option>
+                        <option value="ece">ECE</option>
+                        <option value="aeie">AEIE</option>
+                        <option value="ee">EE</option>
+                        <option value="ce">CE</option>
+                    </select>
+                    <select id="note-filter-sem" style="flex: 1; min-width: 100px;">
+                        <option value="">All Sems</option>
+                        <option value="1">Sem 1</option>
+                        <option value="2">Sem 2</option>
+                        <option value="3">Sem 3</option>
+                        <option value="4">Sem 4</option>
+                        <option value="5">Sem 5</option>
+                        <option value="6">Sem 6</option>
+                        <option value="7">Sem 7</option>
+                        <option value="8">Sem 8</option>
+                    </select>
+                    <select id="note-filter-subj" style="flex: 1; min-width: 100px;">
+                        <option value="">All Subjects</option>
+                        <option value="comp">CSE</option>
+                        <option value="math">Math</option>
+                        <option value="phy">Physics</option>
+                        <option value="chem">Chemistry</option>
+                        <option value="mech">Mech</option>
+                        <option value="ee">EE</option>
+                        <option value="hu">English</option>
+                    </select>
+                    <input type="text" id="note-filter-search" placeholder="Search Note Title, Uploader Name, or ID..." title="Search Note Title, Uploader Name, or ID..." style="flex: 2; min-width: 150px;">
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="applyNoteFilters()" class="btn">Search</button>
+                        <button onclick="resetNoteFilters()" class="btn btn-outline">Reset</button>
+                    </div>
+                </div>
+
+                <div id="admin-notes-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <p>Loading notes from database...</p>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <footer>
+        <div style="margin-bottom: 1.5rem;">
+            <a href="index.html" class="logo" style="text-decoration: none; font-size: 1.5rem;">📚 UITNotes</a>
+        </div>
+        <div class="footer-links">
+            <a href="feedback.html">Submit Feedback</a>
+            <a href="bugreport.html">Report a Bug / Error</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">&copy; 2026 UITNotes Platform. Built for Students.</p>
+    </footer>
+
+    <script>
+        let allUsers = []; 
+        let allAdminNotes = []; 
+
+        fetch('website.php?action=get_user').then(res => res.json()).then(user => {
+            
+            if(!user.logged_in || user.email !== 'minhajganikhan2007@gmail.com') {
+                alert("Restricted Access: You do not have permission to view the Admin Panel.");
+                window.location.href = 'index.html';
+                return;
+            }
+
+            document.getElementById('nav-admin').style.display = 'block';
+
+            let displayYear = "Not Set";
+            if (user.study_year == 1) displayYear = "1st Year";
+            else if (user.study_year == 2) displayYear = "2nd Year";
+            else if (user.study_year == 3) displayYear = "3rd Year";
+            else if (user.study_year == 4) displayYear = "4th Year";
+
+            const initial = user.name.charAt(0).toUpperCase();
+            document.getElementById('nav-auth').innerHTML = `<button id="avatar-btn" style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--primary-accent); color: #000; font-weight: bold; border: none; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center;">${initial}</button>`;
+
+            const sidebarHTML = `
+                <div id="prof-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 999;"></div>
+                <div id="prof-sidebar" style="position: fixed; top: 0; right: -350px; width: 350px; height: 100vh; background-color: var(--bg-surface); box-shadow: -5px 0 15px rgba(0,0,0,0.5); transition: right 0.3s ease; z-index: 1000; display: flex; flex-direction: column;">
+                    <div style="padding: 1.5rem; border-bottom: 1px solid var(--bg-surface-light); display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin:0; color: var(--primary-accent);">My Profile</h3>
+                        <button id="close-sidebar" style="background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">&times;</button>
+                    </div>
+                    <div style="padding: 1.5rem; flex: 1; overflow-y: auto;">
+                        <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Full Name</div><div style="font-size: 1.1rem; color: var(--text-main); font-weight: bold;">${user.name}</div></div>
+                        <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Student ID</div><div style="font-size: 1.1rem; color: var(--text-main);">${user.student_id}</div></div>
+                        <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Department</div><div style="font-size: 1.1rem; color: var(--text-main);">${user.department.toUpperCase()}</div></div>
+                        <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Year of Study</div><div style="font-size: 1.1rem; color: var(--text-main);">${displayYear}</div></div>
+                        <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">University Email</div><div style="font-size: 1rem; color: var(--text-main);">${user.email}</div></div>
+                    </div>
+                    <div style="padding: 1.5rem; border-top: 1px solid var(--bg-surface-light);">
+                        <a href="profile.html" class="btn btn-outline" style="display:block; text-align: center; margin-bottom: 1rem;">⚙️ Profile Settings</a>
+                        <button onclick="logoutUser()" class="btn" style="width: 100%; background-color: var(--danger); color: white;">Logout</button>
+                    </div>
+                </div>`;
+            document.body.insertAdjacentHTML('beforeend', sidebarHTML);
+
+            const sidebar = document.getElementById('prof-sidebar');
+            const overlay = document.getElementById('prof-overlay');
+            const closeSidebar = () => { sidebar.style.right = '-350px'; overlay.style.opacity = '0'; overlay.style.visibility = 'hidden'; };
+
+            document.getElementById('avatar-btn').addEventListener('click', () => { sidebar.style.right = '0'; overlay.style.opacity = '1'; overlay.style.visibility = 'visible'; });
+            document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
+            overlay.addEventListener('click', closeSidebar);
+
+            loadAdminNotes();
+            loadAdminUsers();
+        });
+
+        // --- USER MANAGEMENT LOGIC ---
+        function loadAdminUsers() {
+            fetch('website.php?action=get_all_users')
+            .then(res => res.json())
+            .then(data => {
+                if(data.error) {
+                    document.getElementById('admin-users-container').innerHTML = '<p>Database error loading users.</p>';
+                    return;
+                }
+                allUsers = data;
+                renderUsers(allUsers);
+            });
+        }
+
+        function renderUsers(usersToDraw) {
+            const container = document.getElementById('admin-users-container');
+            container.innerHTML = '';
+
+            if(!usersToDraw || usersToDraw.length === 0) {
+                container.innerHTML = '<p>No users found matching your search.</p>';
+                return;
+            }
+
+            usersToDraw.forEach(u => {
+                let actionButton = `<button onclick="deleteUser(${u.id})" class="btn btn-outline" style="color: var(--danger); border-color: var(--danger); width: 100%;">Delete User Account</button>`;
+                
+                if (u.email === 'minhajganikhan2007@gmail.com' || u.role === 'admin') {
+                    actionButton = `<button disabled class="btn btn-outline" style="color: var(--text-muted); border-color: var(--text-muted); width: 100%; cursor: not-allowed;">Admin Protected (Cannot Delete)</button>`;
+                }
+
+                let yearDisplay = "Not Set";
+                if (u.study_year == 1) yearDisplay = "1st Year";
+                else if (u.study_year == 2) yearDisplay = "2nd Year";
+                else if (u.study_year == 3) yearDisplay = "3rd Year";
+                else if (u.study_year == 4) yearDisplay = "4th Year";
+
+                container.innerHTML += `
+                    <div style="background-color: var(--bg-dark); border-radius: 6px; overflow: hidden; border-left: 3px solid var(--primary-accent);">
+                        <div onclick="toggleUser(${u.id})" style="padding: 1rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.3s;">
+                            <div>
+                                <h4 style="color: var(--text-main); margin: 0; font-size: 1rem;">${u.email} <span style="color: var(--primary-accent); font-size: 0.85rem; font-weight: normal;">(#${u.id})</span></h4>
+                                <span style="font-size: 0.85rem; color: var(--text-muted);">${u.name}</span>
+                            </div>
+                            <span style="color: var(--primary-accent); font-size: 1.2rem;">▼</span>
+                        </div>
+                        <div id="user-details-${u.id}" style="display: none; padding: 1.5rem; border-top: 1px solid var(--bg-surface-light); background-color: #1a1a1a;">
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong style="color: var(--buffer-blue);">System User ID:</strong> #${u.id}</p>
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong style="color: var(--buffer-blue);">Student ID:</strong> ${u.student_id}</p>
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong style="color: var(--buffer-blue);">Department:</strong> ${u.department.toUpperCase()}</p>
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;"><strong style="color: var(--buffer-blue);">Year of Study:</strong> ${yearDisplay}</p>
+                            <p style="font-size: 0.9rem; margin-bottom: 1.5rem; word-break: break-all;">
+                                <strong style="color: var(--buffer-blue);">Encrypted Password Hash:</strong><br>
+                                <span style="color: var(--danger); font-family: monospace; font-size: 0.8rem;">${u.password}</span>
+                            </p>
+                            ${actionButton}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function applyUserFilters() {
+            const dept = document.getElementById('user-filter-dept').value.toLowerCase();
+            const year = document.getElementById('user-filter-year').value;
+            const searchRaw = document.getElementById('user-filter-search').value.toLowerCase();
+            
+            const search = searchRaw.trim();
+            const searchIdOnly = search.replace('#', ''); 
+
+            const filtered = allUsers.filter(u => {
+                const matchesDept = (dept === "" || (u.department && u.department.toLowerCase() === dept));
+                const matchesYear = (year === "" || String(u.study_year) === year);
+                
+                const matchesSearch = (search === "" || 
+                    (u.name && u.name.toLowerCase().includes(search)) || 
+                    (u.student_id && u.student_id.toLowerCase().includes(search)) ||
+                    (String(u.id) === searchIdOnly)); 
+
+                return matchesDept && matchesYear && matchesSearch;
+            });
+            renderUsers(filtered);
+        }
+
+        function resetUserFilters() {
+            document.getElementById('user-filter-dept').value = "";
+            document.getElementById('user-filter-year').value = "";
+            document.getElementById('user-filter-search').value = "";
+            renderUsers(allUsers);
+        }
+
+        // Enter Key Listener for Admin Users Search Bar
+        document.getElementById('user-filter-search').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyUserFilters();
+            }
+        });
+
+        function toggleUser(id) {
+            const el = document.getElementById('user-details-' + id);
+            if (el.style.display === 'none') { el.style.display = 'block'; } 
+            else { el.style.display = 'none'; }
+        }
+
+        function deleteUser(id) {
+            if(!confirm("Are you sure you want to permanently delete this user? Their uploaded notes will NOT be deleted.")) return;
+
+            fetch('website.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'delete_user', id: id })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    alert("User account permanently deleted.");
+                    loadAdminUsers(); 
+                } else {
+                    alert("Error deleting user: " + data.error);
+                }
+            })
+            .catch(err => alert("Failed to reach server."));
+        }
+
+        // --- NOTE MANAGEMENT LOGIC ---
+        function loadAdminNotes() {
+            const cacheBuster = '?v=' + new Date().getTime();
+            fetch('download.php' + cacheBuster)
+            .then(res => res.json())
+            .then(data => {
+                if(data.error) {
+                    document.getElementById('admin-notes-container').innerHTML = '<p>Database error loading notes.</p>';
+                    return;
+                }
+                allAdminNotes = data;
+                renderAdminNotes(allAdminNotes);
+            });
+        }
+
+        function renderAdminNotes(notesToDraw) {
+            const container = document.getElementById('admin-notes-container');
+            container.innerHTML = '';
+
+            if(!notesToDraw || notesToDraw.length === 0) {
+                container.innerHTML = '<p>No notes found matching your search.</p>';
+                return;
+            }
+
+            notesToDraw.forEach(note => {
+                const dateObj = new Date(note.upload_date);
+                const formattedDate = isNaN(dateObj) ? "Recently" : dateObj.toLocaleString('en-US', {
+                    month: 'short', day: 'numeric', year: 'numeric', 
+                    hour: 'numeric', minute: '2-digit', hour12: true
+                });
+
+                const uploaderName = note.uploader_name ? note.uploader_name : 'Unknown User';
+                const uploaderId = note.uploaded_by ? note.uploaded_by : 'N/A';
+
+                container.innerHTML += `
+                    <div style="background-color: var(--bg-dark); padding: 1rem; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--danger);">
+                        <div>
+                            <h4 style="color: var(--text-main); margin-bottom: 0.3rem;">${note.title}</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
+                                <strong>ID:</strong> ${note.id} | <strong>Dept:</strong> ${note.department.toUpperCase()} | <strong>Sem:</strong> ${note.semester} | <strong>Subj:</strong> ${note.subject} <br>
+                                <span style="color: var(--primary-accent);"><strong>Uploaded by:</strong> ${uploaderName} (User ID: ${uploaderId})</span><br>
+                                <span style="color: #888;">🕒 Uploaded: ${formattedDate}</span>
+                            </p>
+                        </div>
+                        <button onclick="deleteNote(${note.id})" class="btn" style="background-color: var(--danger); color: white; padding: 0.4rem 1rem;">Delete File</button>
+                    </div>
+                `;
+            });
+        }
+
+        function applyNoteFilters() {
+            const dept = document.getElementById('note-filter-dept').value.toLowerCase();
+            const sem = document.getElementById('note-filter-sem').value;
+            const subj = document.getElementById('note-filter-subj').value.toLowerCase();
+            const search = document.getElementById('note-filter-search').value.toLowerCase();
+
+            const filtered = allAdminNotes.filter(note => {
+                const matchesDept = (dept === "" || (note.department && note.department.toLowerCase() === dept));
+                const matchesSem = (sem === "" || String(note.semester) === sem);
+                const matchesSubj = (subj === "" || (note.subject && note.subject.toLowerCase() === subj));
+                
+                const matchesSearch = (search === "" || 
+                    (note.title && note.title.toLowerCase().includes(search)) || 
+                    (String(note.id) === search) || 
+                    (note.uploader_name && note.uploader_name.toLowerCase().includes(search)) || 
+                    (String(note.uploaded_by) === search));
+
+                return matchesDept && matchesSem && matchesSubj && matchesSearch;
+            });
+            renderAdminNotes(filtered);
+        }
+
+        function resetNoteFilters() {
+            document.getElementById('note-filter-dept').value = "";
+            document.getElementById('note-filter-sem').value = "";
+            document.getElementById('note-filter-subj').value = "";
+            document.getElementById('note-filter-search').value = "";
+            renderAdminNotes(allAdminNotes);
+        }
+
+        // Enter Key Listener for Admin Notes Search Bar
+        document.getElementById('note-filter-search').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyNoteFilters();
+            }
+        });
+
+        function deleteNote(noteId) {
+            if(!confirm("Are you sure you want to permanently delete this note?")) return;
+
+            fetch('delete_note.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: noteId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    alert("Note permanently deleted.");
+                    loadAdminNotes(); 
+                } else {
+                    alert("Error deleting note: " + data.error);
+                }
+            })
+            .catch(err => alert("Failed to reach server."));
+        }
+
+        function logoutUser() {
+            fetch('website.php', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'logout'}) })
+            .then(() => window.location.href = 'auth.html');
+        }
+    </script>
+</body>
+</html>

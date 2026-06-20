@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UITNotes - Terms of Service</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo" style="text-decoration: none;">📚 UITNotes</a>
+        <nav>
+            <ul>
+                <li><a href="index.html">Browse Notes</a></li>
+                <li><a href="upload.html">Upload</a></li>
+                <li><a href="download.html">Download Notes</a></li>
+                <li id="nav-auth"><a href="auth.html" class="btn btn-outline">Login / Register</a></li>
+                <li id="nav-admin" style="display: none;"><a href="admin.html" class="btn" style="background-color: var(--danger); color: white;">Admin Panel</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section id="terms" style="max-width: 900px; margin: 0 auto;">
+            <h2>Terms of Service</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Last Updated: June 2026</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div>
+                    <h3 style="color: var(--primary-accent); margin-bottom: 0.5rem;">1. Acceptance of Terms</h3>
+                    <p>By registering for and using UITNotes, you agree to abide by these Terms of Service. This platform is designed exclusively to help university students share educational resources and collaborate.</p>
+                </div>
+                <div>
+                    <h3 style="color: var(--primary-accent); margin-bottom: 0.5rem;">2. Academic Integrity</h3>
+                    <p>UITNotes strictly enforces university academic honesty policies. You may not upload:</p>
+                    <ul style="list-style-position: inside; margin-top: 0.5rem; color: var(--text-muted);">
+                        <li>Live exam questions or answer keys.</li>
+                        <li>Articles that promote hate speech or discrimination.</li>
+                        <li>Any material that facilitates cheating or plagiarism.</li>
+                        <li>Any religious or other matters involving personal beliefs.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 style="color: var(--primary-accent); margin-bottom: 0.5rem;">3. Copyright & Upload Rules</h3>
+                    <p>You may only upload content that you have personally created (like handwritten notes or study guides) or content that is explicitly in the public domain. Do not upload official professor slides, textbook PDFs, or faculty-owned material without permission.</p>
+                </div>
+                <div>
+                    <h3 style="color: var(--primary-accent); margin-bottom: 0.5rem;">4. Moderation & Admin Rights</h3>
+                    <p>The UITNotes administration team reserves the right to review, flag, or delete any uploaded document at any time without prior notice. Accounts found violating these terms will be temporarily or permanently banned.</p>
+                </div>
+                <div>
+                    <h3 style="color: var(--primary-accent); margin-bottom: 0.5rem;">5. Limitation of Liability</h3>
+                    <p>UITNotes is a peer-to-peer sharing platform. We do not guarantee the accuracy, completeness, or quality of any notes uploaded by users. Use these resources as a supplement to your own studies.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div style="margin-bottom: 1.5rem;">
+            <a href="index.html" class="logo" style="text-decoration: none; font-size: 1.5rem;">📚 UITNotes</a>
+        </div>
+        <div class="footer-links">
+            <a href="feedback.html">Submit Feedback</a>
+            <a href="bugreport.html">Report a Bug / Error</a>
+            <a href="terms.html">Terms of Service</a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">&copy; 2026 UITNotes Platform. Built for Students.</p>
+    </footer>
+
+    <script>
+        fetch('website.php?action=get_user').then(res => res.json()).then(user => {
+            
+            // NO SECURITY CHECK HERE - Public Page! Just check if they happen to be logged in to show avatar.
+            if(user.logged_in) {
+                if(user.email === 'minhajganikhan2007@gmail.com') {
+                    document.getElementById('nav-admin').style.display = 'block';
+                }
+
+                let displayYear = "Not Set";
+                if (user.study_year == 1) displayYear = "1st Year";
+                else if (user.study_year == 2) displayYear = "2nd Year";
+                else if (user.study_year == 3) displayYear = "3rd Year";
+                else if (user.study_year == 4) displayYear = "4th Year";
+
+                const initial = user.name.charAt(0).toUpperCase();
+                document.getElementById('nav-auth').innerHTML = `<button id="avatar-btn" style="width: 40px; height: 40px; border-radius: 50%; background-color: var(--primary-accent); color: #000; font-weight: bold; border: none; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center;">${initial}</button>`;
+
+                const sidebarHTML = `
+                    <div id="prof-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); opacity: 0; visibility: hidden; transition: 0.3s; z-index: 999;"></div>
+                    <div id="prof-sidebar" style="position: fixed; top: 0; right: -350px; width: 350px; height: 100vh; background-color: var(--bg-surface); box-shadow: -5px 0 15px rgba(0,0,0,0.5); transition: right 0.3s ease; z-index: 1000; display: flex; flex-direction: column;">
+                        <div style="padding: 1.5rem; border-bottom: 1px solid var(--bg-surface-light); display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="margin:0; color: var(--primary-accent);">My Profile</h3>
+                            <button id="close-sidebar" style="background: none; border: none; color: var(--text-main); font-size: 1.5rem; cursor: pointer;">&times;</button>
+                        </div>
+                        <div style="padding: 1.5rem; flex: 1; overflow-y: auto;">
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Full Name</div><div style="font-size: 1.1rem; color: var(--text-main); font-weight: bold;">${user.name}</div></div>
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Student ID</div><div style="font-size: 1.1rem; color: var(--text-main);">${user.student_id}</div></div>
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Department</div><div style="font-size: 1.1rem; color: var(--text-main);">${user.department.toUpperCase()}</div></div>
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Year of Study</div><div style="font-size: 1.1rem; color: var(--text-main);">${displayYear}</div></div>
+                            <div style="margin-bottom: 1.2rem;"><div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">University Email</div><div style="font-size: 1rem; color: var(--text-main);">${user.email}</div></div>
+                        </div>
+                        <div style="padding: 1.5rem; border-top: 1px solid var(--bg-surface-light);">
+                            <a href="profile.html" class="btn btn-outline" style="display:block; text-align: center; margin-bottom: 1rem;">⚙️ Profile Settings</a>
+                            <button onclick="logoutUser()" class="btn" style="width: 100%; background-color: var(--danger); color: white;">Logout</button>
+                        </div>
+                    </div>`;
+                document.body.insertAdjacentHTML('beforeend', sidebarHTML);
+
+                const sidebar = document.getElementById('prof-sidebar');
+                const overlay = document.getElementById('prof-overlay');
+                const closeSidebar = () => { sidebar.style.right = '-350px'; overlay.style.opacity = '0'; overlay.style.visibility = 'hidden'; };
+
+                document.getElementById('avatar-btn').addEventListener('click', () => { sidebar.style.right = '0'; overlay.style.opacity = '1'; overlay.style.visibility = 'visible'; });
+                document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
+                overlay.addEventListener('click', closeSidebar);
+            }
+        });
+
+        function logoutUser() {
+            fetch('website.php', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({action: 'logout'}) })
+            .then(() => window.location.reload());
+        }
+    </script>
+</body>
+</html>
